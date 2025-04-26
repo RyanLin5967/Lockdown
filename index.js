@@ -1,200 +1,222 @@
-const playButton = document.getElementById('playbtn'); 
-const mainpage = document.getElementById('mainpage');
+const playButton = document.getElementById("playbtn");
+const mainpage = document.getElementById("mainpage");
 
-var myGamePiece;
-var greySquares = [];
+var player;
+var toiletPapers = [];
 var score = 0; // 🚀 New: Track collected toilet papers
 
 let backgroundImage = new Image();
 backgroundImage.src = "tile.webp";
 
-function toGame(){
-    startGame();
+function toGame() {
+  startGame();
 }
 
 function startGame() {
-    myGameArea.start();
-    myGamePiece = new component(75, 75, "guy.png", 100, 120, "image"); 
-    // width = 50, height = 50, source = "guy.png", x = 100, y = 120, type = image
+  shop.start();
+  player = new component(75, 75, "guy.png", 100, 120, "image");
+  // width = 50, height = 50, source = "guy.png", x = 100, y = 120, type = image
 
-    for (let i = 0; i < 5; i++) {
-        spawnGreySquare();
-    }
+  for (let i = 0; i < 5; i++) {
+    spawnToiletPaper();
+  }
 
-    randomSpawner();
+  randomSpawner();
 }
 
-
-var myGameArea = {
-    canvas: document.createElement("canvas"),
-    start: function() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-        this.context = this.canvas.getContext("2d");
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-        this.interval = setInterval(updateGameArea, 20);
-        window.addEventListener('keydown', keyDownHandler);
-        window.addEventListener('keyup', keyUpHandler);
-        window.addEventListener('resize', () => {
-            this.canvas.width = window.innerWidth;
-            this.canvas.height = window.innerHeight;
-        });
-    },
-    clear: function() {
-        if (score >= 20) {
-
-            this.context.fillStyle = "green";
-            this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-            this.context.fillStyle = "white"; // Set text color to white
-            this.context.font = "40px Arial";
-            this.context.textAlign = "center";
-            this.context.fillText("You Win!", this.canvas.width / 2, this.canvas.height / 2);
-        } else {
-            // Normal game drawing
-            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.context.drawImage(backgroundImage, 0, 0, this.canvas.width, this.canvas.height);
-        }
+var shop = {
+  canvas: document.createElement("canvas"),
+  start: function () {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+    this.context = this.canvas.getContext("2d");
+    document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+    this.interval = setInterval(updateGameArea, 20);
+    window.addEventListener("keydown", keyDownHandler);
+    window.addEventListener("keyup", keyUpHandler);
+    window.addEventListener("resize", () => {
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
+    });
+  },
+  clear: function () {
+    if (score >= 20) {
+      this.context.fillStyle = "green";
+      this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      this.context.fillStyle = "white"; // Set text color to white
+      this.context.font = "40px Arial";
+      this.context.textAlign = "center";
+      this.context.fillText(
+        "You Win!",
+        this.canvas.width / 2,
+        this.canvas.height / 2
+      );
+    } else {
+      // Normal game drawing
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.context.drawImage(
+        backgroundImage,
+        0,
+        0,
+        this.canvas.width,
+        this.canvas.height
+      );
     }
+  },
 };
 
-
 function component(width, height, color, x, y, type) {
-    this.width = width;
-    this.height = height;
-    this.color = color;
-    this.type = type;
-    this.speedX = 0;
-    this.speedY = 0;
-    this.x = x;
-    this.y = y;
+  this.width = width;
+  this.height = height;
+  this.color = color;
+  this.type = type;
+  this.speedX = 0;
+  this.speedY = 0;
+  this.x = x;
+  this.y = y;
 
+  if (this.type === "image") {
+    this.image = new Image();
+    this.image.src = color;
+  }
+
+  this.update = function () {
+    let ctx = shop.context;
     if (this.type === "image") {
-        this.image = new Image();
-        this.image.src = color;
+      ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+    } else {
+      ctx.fillStyle = this.color;
+      ctx.fillRect(this.x, this.y, this.width, this.height);
     }
+  };
 
-    this.update = function() {
-        let ctx = myGameArea.context;
-        if (this.type === "image") {
-            ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-        } else {
-            ctx.fillStyle = this.color;
-            ctx.fillRect(this.x, this.y, this.width, this.height);
-        }
-    };
+  this.newPos = function () {
+    this.x += this.speedX;
+    this.y += this.speedY;
 
-    this.newPos = function() {
-        this.x += this.speedX;
-        this.y += this.speedY;
+    // 🚫 Prevent escaping the canvas
+    if (this.x < 0) this.x = 0;
+    if (this.y < 0) this.y = 0;
+    if (this.x + this.width > shop.canvas.width)
+      this.x = shop.canvas.width - this.width;
+    if (this.y + this.height > shop.canvas.height)
+      this.y = shop.canvas.height - this.height;
+  };
 
-        // 🚫 Prevent escaping the canvas
-        if (this.x < 0) this.x = 0;
-        if (this.y < 0) this.y = 0;
-        if (this.x + this.width > myGameArea.canvas.width) this.x = myGameArea.canvas.width - this.width;
-        if (this.y + this.height > myGameArea.canvas.height) this.y = myGameArea.canvas.height - this.height;
-    };
-
-    this.crashWith = function(other) {
-        return !(this.x + this.width < other.x ||
-                 this.x > other.x + other.width ||
-                 this.y + this.height < other.y ||
-                 this.y > other.y + other.height);
-    };
+  this.crashWith = function (other) {
+    return !(
+      this.x + this.width < other.x ||
+      this.x > other.x + other.width ||
+      this.y + this.height < other.y ||
+      this.y > other.y + other.height
+    );
+  };
 }
 
-const bgMusic = new Audio('music.wav'); 
+const bgMusic = new Audio("music.wav");
 bgMusic.loop = true;
-bgMusic.volume = 0.5; 
+bgMusic.volume = 0.5;
 
-window.addEventListener('keydown', () => {
+window.addEventListener(
+  "keydown",
+  () => {
     bgMusic.play();
-}, { once: true });
+  },
+  { once: true }
+);
 
-function spawnGreySquare() {
-    let tries = 0;
-    let maxTries = 50;
-    let newSquare;
-    let overlap;
+function spawnToiletPaper() {
+  let tries = 0;
+  let maxTries = 50;
+  let newToiletPaper;
+  let overlap;
 
-    do {
-        let randomX = Math.floor(Math.random() * (myGameArea.canvas.width - 30));
-        let randomY = Math.floor(Math.random() * (myGameArea.canvas.height - 30));
-        newSquare = new component(50, 50, "toiletpaper.webp", randomX, randomY, "image"); 
+  do {
+    let randomX = Math.floor(Math.random() * (shop.canvas.width - 30));
+    let randomY = Math.floor(Math.random() * (shop.canvas.height - 30));
+    newToiletPaper = new component(
+      50,
+      50,
+      "toiletpaper.webp",
+      randomX,
+      randomY,
+      "image"
+    );
 
-        // Check overlap
-        overlap = greySquares.some(square => {
-            return !(newSquare.x + newSquare.width < square.x ||
-                     newSquare.x > square.x + square.width ||
-                     newSquare.y + newSquare.height < square.y ||
-                     newSquare.y > square.y + square.height);
-        });
+    // Check overlap
+    overlap = toiletPapers.some((square) => {
+      return !(
+        newToiletPaper.x + newToiletPaper.width < square.x ||
+        newToiletPaper.x > square.x + square.width ||
+        newToiletPaper.y + newToiletPaper.height < square.y ||
+        newToiletPaper.y > square.y + square.height
+      );
+    });
 
-        tries++;
-    } while (overlap && tries < maxTries);
-    if (!overlap) {
-        greySquares.push(newSquare);
-    }
+    tries++;
+  } while (overlap && tries < maxTries);
+  if (!overlap) {
+    toiletPapers.push(newToiletPaper);
+  }
 }
 
 function updateGameArea() {
-    
-    myGameArea.clear();
-    myGamePiece.newPos();
-    myGamePiece.update();
+  shop.clear();
+  player.newPos();
+  player.update();
 
-    for (let i = 0; i < greySquares.length; i++) {
-        greySquares[i].update();
-    }
+  for (let i = 0; i < toiletPapers.length; i++) {
+    toiletPapers[i].update();
+  }
 
-    for (let i = greySquares.length - 1; i >= 0; i--) {
-        if (myGamePiece.crashWith(greySquares[i])) {
-            greySquares.splice(i, 1);
-            score += 1;
-        }
+  for (let i = toiletPapers.length - 1; i >= 0; i--) {
+    if (player.crashWith(toiletPapers[i])) {
+      toiletPapers.splice(i, 1);
+      score += 1;
     }
-    if(score === 2){
-        setTimeout(() =>{
-            location.reload();
-        }, 0)
-    }
-    drawScore();
+  }
+  if (score === 2) {
+    setTimeout(() => {
+      location.reload();
+    }, 0);
+  }
+  drawScore();
 }
-
 
 function drawScore() {
-    let ctx = myGameArea.context;
-    ctx.font = "20px Arial";
-    ctx.fillStyle = "black";
-    ctx.textAlign = "right";
-    ctx.fillText("Toilet Paper Collected: " + score, myGameArea.canvas.width - 50, 30);
+  let ctx = shop.context;
+  ctx.font = "20px Arial";
+  ctx.fillStyle = "black";
+  ctx.textAlign = "right";
+  ctx.fillText("Toilet Paper Collected: " + score, shop.canvas.width - 50, 30);
 }
 function randomSpawner() {
-    let randomDelay = Math.random() * 7000 + 1000; 
-    setTimeout(() => {
-        spawnGreySquare();
-        randomSpawner();
-    }, randomDelay);
+  let randomDelay = Math.random() * 3000 + 1000;
+  setTimeout(() => {
+    spawnToiletPaper();
+    randomSpawner();
+  }, randomDelay);
 }
 function keyDownHandler(e) {
-    if (e.key === "ArrowUp") {
-        myGamePiece.speedY = -4;
-    }
-    if (e.key === "ArrowDown") {
-        myGamePiece.speedY = 4;
-    }
-    if (e.key === "ArrowLeft") {
-        myGamePiece.speedX = -4;
-    }
-    if (e.key === "ArrowRight") {
-        myGamePiece.speedX = 4;
-    }
+  if (e.key === "ArrowUp") {
+    player.speedY = -4;
+  }
+  if (e.key === "ArrowDown") {
+    player.speedY = 4;
+  }
+  if (e.key === "ArrowLeft") {
+    player.speedX = -4;
+  }
+  if (e.key === "ArrowRight") {
+    player.speedX = 4;
+  }
 }
 
 function keyUpHandler(e) {
-    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-        myGamePiece.speedY = 0;
-    }
-    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-        myGamePiece.speedX = 0;
-    }
+  if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+    player.speedY = 0;
+  }
+  if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+    player.speedX = 0;
+  }
 }
