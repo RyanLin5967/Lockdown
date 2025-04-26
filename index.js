@@ -3,7 +3,15 @@ const mainpage = document.getElementById('mainpage');
 
 var myGamePiece;
 var greySquares = [];
-var score = 0; 
+var score = 0; // 🚀 New: Track collected toilet papers
+
+let tileImage = new Image();
+let tilePattern = null; // Will store the pattern
+
+tileImage.src = 'tile.webp';
+tileImage.onload = function() {
+    tilePattern = myGameArea.context.createPattern(tileImage, 'repeat');
+};
 
 function toGame(){
     startGame();
@@ -12,11 +20,12 @@ function toGame(){
 function startGame() {
     myGameArea.start();
     myGamePiece = new component(75, 75, "guy.png", 100, 120, "image"); 
-    
+    // width = 50, height = 50, source = "guy.png", x = 100, y = 120, type = image
+
     for (let i = 0; i < 5; i++) {
         spawnGreySquare();
     }
-    
+
     randomSpawner();
 }
 
@@ -32,13 +41,18 @@ var myGameArea = {
         window.addEventListener('keydown', keyDownHandler);
         window.addEventListener('keyup', keyUpHandler);
         window.addEventListener('resize', () => {
-            this.canvas.width = window.innerWidth;
-            this.canvas.height = window.innerHeight;
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
         });
     },
-    clear : function() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    }
+    clear: function() {
+        if (tilePattern) {
+            this.context.fillStyle = tilePattern;
+            this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        } else {
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+    }    
 };
 
 function component(width, height, color, x, y, type) {
@@ -49,11 +63,11 @@ function component(width, height, color, x, y, type) {
     this.speedX = 0;
     this.speedY = 0;
     this.x = x;
-    this.y = y;    
+    this.y = y;
 
     if (this.type === "image") {
         this.image = new Image();
-        this.image.src = color; // color will actually be the image URL
+        this.image.src = color;
     }
 
     this.update = function() {
@@ -64,20 +78,27 @@ function component(width, height, color, x, y, type) {
             ctx.fillStyle = this.color;
             ctx.fillRect(this.x, this.y, this.width, this.height);
         }
-    }
+    };
 
     this.newPos = function() {
         this.x += this.speedX;
         this.y += this.speedY;
-    }
+
+        // 🚫 Prevent escaping the canvas
+        if (this.x < 0) this.x = 0;
+        if (this.y < 0) this.y = 0;
+        if (this.x + this.width > myGameArea.canvas.width) this.x = myGameArea.canvas.width - this.width;
+        if (this.y + this.height > myGameArea.canvas.height) this.y = myGameArea.canvas.height - this.height;
+    };
 
     this.crashWith = function(other) {
         return !(this.x + this.width < other.x ||
                  this.x > other.x + other.width ||
                  this.y + this.height < other.y ||
                  this.y > other.y + other.height);
-    }
+    };
 }
+
 
 
 function spawnGreySquare() {
@@ -117,6 +138,13 @@ function randomSpawner() {
 }
 
 function updateGameArea() {
+    let tileImage = new Image();
+    tileImage.src = 'tile.webp'; // your tile image
+    tileImage.onload = function() {
+        let pattern = myGameArea.context.createPattern(tileImage, 'repeat');
+        myGameArea.context.fillStyle = pattern;
+        myGameArea.context.fillRect(0, 0, myGameArea.canvas.width, myGameArea.canvas.height);
+    };
     myGameArea.clear();
     myGamePiece.newPos();
     myGamePiece.update();
@@ -127,13 +155,14 @@ function updateGameArea() {
 
     for (let i = greySquares.length - 1; i >= 0; i--) {
         if (myGamePiece.crashWith(greySquares[i])) {
-            greySquares.splice(i, 1); 
-            score += 1; 
+            greySquares.splice(i, 1);
+            score += 1;
         }
     }
 
     drawScore();
 }
+
 
 function drawScore() {
     let ctx = myGameArea.context;
@@ -145,16 +174,16 @@ function drawScore() {
 
 function keyDownHandler(e) {
     if (e.key === "ArrowUp") {
-        myGamePiece.speedY = -4;
+        myGamePiece.speedY = -3;
     }
     if (e.key === "ArrowDown") {
-        myGamePiece.speedY = 4;
+        myGamePiece.speedY = 3;
     }
     if (e.key === "ArrowLeft") {
-        myGamePiece.speedX = -4;
+        myGamePiece.speedX = -3;
     }
     if (e.key === "ArrowRight") {
-        myGamePiece.speedX = 4;
+        myGamePiece.speedX = 3;
     }
 }
 
