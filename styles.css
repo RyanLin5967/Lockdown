@@ -1,0 +1,22 @@
+.title {
+    font-family: 'Press Start 2P', cursive;
+    margin-top: 20vh;
+    text-align: center;
+    font-size: 15vh;
+
+    color: black; /* your text color */
+    text-shadow:
+        -2px -2px 0 white,
+        2px -2px 0 white,
+        -2px  2px 0 white,
+        2px  2px 0 white;
+
+}
+
+body {
+    background-image: url('web_background.png'); /* or URL to your image */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* optional, makes it stay when scrolling */
+  }
