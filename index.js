@@ -1,17 +1,14 @@
-const playButton = document.getElementById('playbtn');
+const playButton = document.getElementById('playbtn'); 
 const mainpage = document.getElementById('mainpage');
 
 var myGamePiece;
 var greySquares = [];
 var score = 0; // 🚀 New: Track collected toilet papers
 
-let tileImage = new Image();
-let tilePattern = null; // Will store the pattern
+let backgroundImage = new Image();
+backgroundImage.src = "tile.webp";
 
-tileImage.src = 'tile.webp';
-tileImage.onload = function() {
-    tilePattern = myGameArea.context.createPattern(tileImage, 'repeat');
-};
+
 
 function toGame(){
     startGame();
@@ -31,8 +28,8 @@ function startGame() {
 
 
 var myGameArea = {
-    canvas : document.createElement("canvas"),
-    start : function() {
+    canvas: document.createElement("canvas"),
+    start: function() {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.context = this.canvas.getContext("2d");
@@ -41,19 +38,16 @@ var myGameArea = {
         window.addEventListener('keydown', keyDownHandler);
         window.addEventListener('keyup', keyUpHandler);
         window.addEventListener('resize', () => {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
         });
     },
     clear: function() {
-        if (tilePattern) {
-            this.context.fillStyle = tilePattern;
-            this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        } else {
-            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        }
-    }    
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.context.drawImage(backgroundImage, 0, 0, this.canvas.width, this.canvas.height);
+    }
 };
+
 
 function component(width, height, color, x, y, type) {
     this.width = width;
@@ -100,7 +94,6 @@ function component(width, height, color, x, y, type) {
 }
 
 
-
 function spawnGreySquare() {
     let tries = 0;
     let maxTries = 50;
@@ -122,29 +115,13 @@ function spawnGreySquare() {
 
         tries++;
     } while (overlap && tries < maxTries);
-
     if (!overlap) {
         greySquares.push(newSquare);
     }
 }
 
-
-function randomSpawner() {
-    let randomDelay = Math.random() * 3000 + 1000; // 1s-4s
-    setTimeout(() => {
-        spawnGreySquare();
-        randomSpawner();
-    }, randomDelay);
-}
-
 function updateGameArea() {
-    let tileImage = new Image();
-    tileImage.src = 'tile.webp'; // your tile image
-    tileImage.onload = function() {
-        let pattern = myGameArea.context.createPattern(tileImage, 'repeat');
-        myGameArea.context.fillStyle = pattern;
-        myGameArea.context.fillRect(0, 0, myGameArea.canvas.width, myGameArea.canvas.height);
-    };
+    
     myGameArea.clear();
     myGamePiece.newPos();
     myGamePiece.update();
@@ -159,7 +136,7 @@ function updateGameArea() {
             score += 1;
         }
     }
-
+    
     drawScore();
 }
 
@@ -171,19 +148,25 @@ function drawScore() {
     ctx.textAlign = "right";
     ctx.fillText("Toilet Paper Collected: " + score, myGameArea.canvas.width - 50, 30);
 }
-
+function randomSpawner() {
+    let randomDelay = Math.random() * 7000 + 1000; 
+    setTimeout(() => {
+        spawnGreySquare();
+        randomSpawner();
+    }, randomDelay);
+}
 function keyDownHandler(e) {
     if (e.key === "ArrowUp") {
-        myGamePiece.speedY = -3;
+        myGamePiece.speedY = -4;
     }
     if (e.key === "ArrowDown") {
-        myGamePiece.speedY = 3;
+        myGamePiece.speedY = 4;
     }
     if (e.key === "ArrowLeft") {
-        myGamePiece.speedX = -3;
+        myGamePiece.speedX = -4;
     }
     if (e.key === "ArrowRight") {
-        myGamePiece.speedX = 3;
+        myGamePiece.speedX = 4;
     }
 }
 
