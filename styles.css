@@ -21,7 +21,7 @@ body {
     background-repeat: no-repeat;
     background-attachment: fixed; /* optional, makes it stay when scrolling */
 
-
+}
 #playbtn{
 
 display: block;
@@ -47,4 +47,8 @@ background-color: #84df88;
 #playbtn:active {
     background-color: white;
     color: black;
+}
+
+#canvas1 {
+    display: none;
 }
