@@ -1,7 +1,28 @@
-#playbtn{
-    font-size: 1.5em;
-    text-align:center;
-    margin: 50px;
-    background-color: skyblue;
-    cursor:pointer;
-}
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background-color: #f0f0f0;
+    position: relative;
+  }
+
+  #playbtn{
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: background-color 0.3s;
+  }
+
+  #playbtn:hover {
+    background-color: #84df88;
+  }
