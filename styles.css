@@ -24,29 +24,29 @@ body {
 }
 #playbtn{
 
-display: block;
-margin-left: auto;
-margin-right: auto;
-background-color: #4CAF50;
-border: none;
-color: white;
-padding: 15px 30px;
-text-align: center;
-text-decoration: none;
-font-size: 20px;
-border-radius: 50px;
-cursor: pointer;
-box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-transition: background-color 0.3s;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 30px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: background-color 0.3s;
 }
 
 #playbtn:hover {
-background-color: #84df88;
+  background-color: #84df88;
 }
 
 #playbtn:active {
-    background-color: white;
-    color: black;
+  background-color: white;
+  color: black;
 }
 
 #canvas1 {
