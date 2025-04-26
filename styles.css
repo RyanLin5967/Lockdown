@@ -22,7 +22,7 @@ body {
     background-attachment: fixed; /* optional, makes it stay when scrolling */
 
 }
-#playbtn{
+.gameselector, #playbtn{
 
   display: block;
   margin-left: auto;
@@ -51,4 +51,8 @@ body {
 
 #canvas1 {
     display: none;
+}
+
+.gameselector {
+  display: none;
 }
