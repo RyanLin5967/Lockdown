@@ -8,8 +8,6 @@ var score = 0; // 🚀 New: Track collected toilet papers
 let backgroundImage = new Image();
 backgroundImage.src = "tile.webp";
 
-
-
 function toGame(){
     startGame();
 }
@@ -43,8 +41,19 @@ var myGameArea = {
         });
     },
     clear: function() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.context.drawImage(backgroundImage, 0, 0, this.canvas.width, this.canvas.height);
+        if (score >= 20) {
+
+            this.context.fillStyle = "green";
+            this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.context.fillStyle = "white"; // Set text color to white
+            this.context.font = "40px Arial";
+            this.context.textAlign = "center";
+            this.context.fillText("You Win!", this.canvas.width / 2, this.canvas.height / 2);
+        } else {
+            // Normal game drawing
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.context.drawImage(backgroundImage, 0, 0, this.canvas.width, this.canvas.height);
+        }
     }
 };
 
@@ -93,6 +102,13 @@ function component(width, height, color, x, y, type) {
     };
 }
 
+const bgMusic = new Audio('music.wav'); 
+bgMusic.loop = true;
+bgMusic.volume = 0.5; 
+
+window.addEventListener('keydown', () => {
+    bgMusic.play();
+}, { once: true });
 
 function spawnGreySquare() {
     let tries = 0;
@@ -136,7 +152,11 @@ function updateGameArea() {
             score += 1;
         }
     }
-    
+    if(score === 2){
+        setTimeout(() =>{
+            location.reload();
+        }, 0)
+    }
     drawScore();
 }
 
