@@ -9,7 +9,7 @@
       text-align: center;
       background-color: #f0f0f0;
       padding: 20px;
-    } /* Add some basic styling */
+    } 
     .word-output {
       font-size: 24px;
       margin: 10px;
@@ -26,7 +26,7 @@
     .gray {
       background-color: lightgray;
       padding: 5px;
-    } /* Add color coding for letters */
+    }
     #result {
       margin-top: 20px;
       font-size: 20px;
@@ -46,6 +46,7 @@
   </style>
 </head>
 <body>
+  
 
   <h1>Tech Word Guess Game</h1>
   <p>Enter a 5-letter tech word:</p>
@@ -59,11 +60,11 @@
       "click", "cyber", "robot", "input", "digit", "track", "trend",
       "error", "codes", "modem", "radio", "beeps", "blink", "swipe",
       "login", "files", "audio", "proxy"
-    ]; // Add more tech-related words as needed
+    ]; 
 
     let targetWord = getNewWord();
     let attempts = 0;
-    const maxAttempts = 6; // Set max attempts to 6
+    const maxAttempts = 6;
 
     document.getElementById("submitBtn").addEventListener("click", submitGuess);
 
@@ -78,12 +79,12 @@
       } catch {
         return false;
       }
-    }// Check if the word exists in the dictionary
+    }
 
     async function submitGuess() {
       const input = document.getElementById("guess");
       const guess = input.value.toLowerCase().trim();
-      input.value = ""; // Clear input field
+      input.value = ""; 
 
       if (guess.length !== 5) {
         alert("Please enter a 5-letter word.");
@@ -102,13 +103,13 @@
       if (guess === targetWord) {
         document.getElementById("result").innerText = `🎉 You guessed it! The word was "${targetWord}". Starting new game...`;
         setTimeout(resetGame, 3000);
-        return; // Reset game after 3 seconds
+        return;
       }
 
       if (attempts >= maxAttempts) {
         document.getElementById("result").innerText = `❌ You're out of tries! The word was "${targetWord}". Starting new game...`;
         setTimeout(resetGame, 3000);
-      } // Reset game after 3 seconds
+      }
     }
 
     function displayGuess(guess) {
@@ -117,7 +118,7 @@
 
       for (let i = 0; i < guess.length; i++) {
         const span = document.createElement("span");
-        span.textContent = guess[i]; // Display each letter
+        span.textContent = guess[i];
 
         if (guess[i] === targetWord[i]) {
           span.className = "green";
@@ -125,7 +126,7 @@
           span.className = "yellow";
         } else {
           span.className = "gray";
-        } // Color code letters based on their status
+        } 
 
         output.appendChild(span);
       }
@@ -138,9 +139,16 @@
       targetWord = getNewWord();
       document.getElementById("gameBoard").innerHTML = "";
       document.getElementById("result").innerText = "";
-      document.getElementById("guess").disabled = false; // Enable input field
+      document.getElementById("guess").disabled = false;
     }
-  </script>
+    const bgMusic = new Audio('backgroundmusic.wav');
+    bgMusic.loop = true;
+    bgMusic.volume = 0.5;
 
+    window.addEventListener('click', () => {
+        bgMusic.play();
+    }, { once: true });
+  </script>
+<a href="index.html"><button>back</button></a>
 </body>
 </html>

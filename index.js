@@ -3,7 +3,7 @@ const mainpage = document.getElementById("mainpage");
 
 var player;
 var toiletPapers = [];
-var score = 0; // 🚀 New: Track collected toilet papers
+var score = 0; 
 
 let backgroundImage = new Image();
 backgroundImage.src = "tile.webp";
@@ -15,7 +15,7 @@ function toGame() {
 function startGame() {
   shop.start();
   player = new component(75, 75, "guy.png", 100, 120, "image");
-  // width = 50, height = 50, source = "guy.png", x = 100, y = 120, type = image
+  
 
   for (let i = 0; i < 5; i++) {
     spawnToiletPaper();
@@ -43,7 +43,7 @@ var shop = {
     if (score >= 20) {
       this.context.fillStyle = "green";
       this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-      this.context.fillStyle = "white"; // Set text color to white
+      this.context.fillStyle = "white"; 
       this.context.font = "40px Arial";
       this.context.textAlign = "center";
       this.context.fillText(
@@ -52,7 +52,7 @@ var shop = {
         this.canvas.height / 2
       );
     } else {
-      // Normal game drawing
+      
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.context.drawImage(
         backgroundImage,
@@ -94,7 +94,7 @@ function component(width, height, color, x, y, type) {
     this.x += this.speedX;
     this.y += this.speedY;
 
-    // 🚫 Prevent escaping the canvas
+    
     if (this.x < 0) this.x = 0;
     if (this.y < 0) this.y = 0;
     if (this.x + this.width > shop.canvas.width)
@@ -143,7 +143,7 @@ function spawnToiletPaper() {
       "image"
     );
 
-    // Check overlap
+    
     overlap = toiletPapers.some((square) => {
       return !(
         newToiletPaper.x + newToiletPaper.width < square.x ||
@@ -175,7 +175,7 @@ function updateGameArea() {
       score += 1;
     }
   }
-  if (score === 2) {
+  if (score === 20) {
     setTimeout(() => {
       location.reload();
     }, 0);
